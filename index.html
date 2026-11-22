@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>Baby Shower de Zoe ✨ | Santiago & Dayanna</title>
+  <meta name="description" content="Acompáñanos a celebrar la dulce espera de nuestra princesa Zoe. Domingo 6 de diciembre de 2026." />
+  <meta name="theme-color" content="#FADADD" />
+
+  <!-- Google Fonts: Editorial Pairing -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,500&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS compilado localmente -->
+  <link href="./styles.css" rel="stylesheet" />
+
+  <!-- GSAP 3 + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js" defer></script>
+
+  <style>
+    :root {
+      --bg-paper: #FFFDF9;
+      --pink-soft: #FADADD;
+      --pink-rose: #F4ACB7;
+      --honey-soft: #FFF3B0;
+      --honey-gold: #F6BD60;
+      --cocoa: #5C4033;
+    }
+
+    body {
+      background-color: var(--bg-paper);
+      color: var(--cocoa);
+      font-family: 'Quicksand', sans-serif;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Textura sutil de papel de acuarela sin dependencias externas */
+    .paper-texture {
+      background-color: #FFFDF9;
+      background-image: 
+        radial-gradient(at 15% 15%, rgba(250, 218, 221, 0.35) 0px, transparent 50%),
+        radial-gradient(at 85% 25%, rgba(255, 243, 176, 0.4) 0px, transparent 55%),
+        radial-gradient(at 50% 80%, rgba(244, 172, 183, 0.25) 0px, transparent 55%),
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.035'/%3E%3C/svg%3E");
+    }
+
+    /* Manchas de acuarela orgánicas */
+    .watercolor-blob {
+      border-radius: 62% 38% 46% 54% / 60% 44% 56% 40%;
+      filter: blur(18px);
+      pointer-events: none;
+    }
+
+    /* Sello de Lacre 3D */
+    .wax-seal {
+      background: radial-gradient(circle at 32% 30%, #F9C6D0 0%, #E88D9E 45%, #C96478 85%, #A84A5D 100%);
+      border: 3px solid rgba(255, 243, 176, 0.65);
+      position: relative;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .wax-seal::after {
+      content: '';
+      position: absolute;
+      inset: 5px;
+      border-radius: 9999px;
+      border: 1.5px dashed rgba(255, 248, 214, 0.75);
+    }
+
+    @keyframes pulseSeal {
+      0%, 100% { transform: scale(1); box-shadow: 0 10px 25px rgba(201, 100, 120, 0.45); }
+      50% { transform: scale(1.06); box-shadow: 0 14px 32px rgba(246, 189, 96, 0.65); }
+    }
+    .animate-seal {
+      animation: pulseSeal 2.4s infinite ease-in-out;
+    }
+
+    /* Solapa 3D del sobre */
+    .envelope-container {
+      perspective: 1200px;
+    }
+    .envelope-flap {
+      transform-origin: top center;
+      transform-style: preserve-3d;
+      clip-path: polygon(0 0, 50% 62%, 100% 0);
+    }
+
+    #envelopeOverlay,
+    #mainStory {
+      transition: opacity 0.65s ease;
+    }
+
+    #envelopeOverlay.is-opening {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    body.invitation-open #mainStory {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #envelopeOverlay,
+      #mainStory {
+        transition-duration: 0.01ms;
+      }
+    }
+
+    /* Animaciones suaves de flotación y saludo */
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-9px) rotate(1.5deg); }
+    }
+    .animate-float {
+      animation: floatSlow 4.2s ease-in-out infinite;
+    }
+
+    @keyframes tiggerBounce {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      28% { transform: translateY(-18px) rotate(-4deg); }
+      48% { transform: translateY(0) rotate(2deg) scaleY(0.96); }
+      62% { transform: translateY(-8px) rotate(-2deg); }
+      78% { transform: translateY(0) rotate(0deg); }
+    }
+    .animate-tigger-bounce {
+      transform-origin: bottom center;
+      animation: tiggerBounce 1.15s ease-in-out infinite;
+    }
+
+    @keyframes cartWalk {
+      0%, 100% { transform: translateX(0) rotate(0deg); }
+      28% { transform: translateX(7px) rotate(1.5deg); }
+      58% { transform: translateX(12px) rotate(-1deg); }
+      82% { transform: translateX(4px) rotate(0.5deg); }
+    }
+    .animate-cart-walk {
+      animation: cartWalk 2.4s ease-in-out infinite;
+    }
+
+    @keyframes gentleSway {
+      0%, 100% { transform: rotate(-1deg) translateY(0); }
+      50% { transform: rotate(1.5deg) translateY(-5px); }
+    }
+    .animate-gentle-sway {
+      transform-origin: bottom center;
+      animation: gentleSway 3.2s ease-in-out infinite;
+    }
+
+    @keyframes pigletHug {
+      0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+      50% { transform: translateY(-5px) rotate(-2deg) scale(1.015); }
+    }
+    .animate-piglet-hug {
+      transform-origin: bottom center;
+      animation: pigletHug 2.7s ease-in-out infinite;
+    }
+
+    @keyframes gardenFloat {
+      0%, 100% { transform: translateY(0) rotate(-1deg); }
+      50% { transform: translateY(-7px) rotate(1deg); }
+    }
+    .garden-character {
+      animation: gardenFloat 3.2s ease-in-out infinite;
+    }
+    .garden-character:nth-child(3n + 2) { animation-delay: -1s; }
+    .garden-character:nth-child(3n) { animation-delay: -2s; }
+
+    .scroll-reveal {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.55s ease, transform 0.65s cubic-bezier(0.2, 0.75, 0.25, 1);
+      will-change: opacity, transform;
+    }
+    .scroll-reveal.is-visible {
+      opacity: 1;
+      transform: none;
+    }
+    .scroll-reveal.reveal-fade {
+      transform: translateY(9px);
+      transition-duration: 0.45s;
+    }
+    .scroll-reveal.reveal-pop {
+      transform: translateY(14px) scale(0.86);
+      transition-duration: 0.5s;
+    }
+    .scroll-reveal.reveal-slide-left {
+      transform: translateX(-42px);
+    }
+    .scroll-reveal.reveal-slide-right {
+      transform: translateX(42px);
+    }
+    .scroll-reveal.countdown-tile {
+      transform-style: preserve-3d;
+    }
+    .scroll-reveal.countdown-from-left {
+      transform: translateX(-38px) rotateY(-70deg);
+    }
+    .scroll-reveal.countdown-from-bottom {
+      transform: translateY(34px) rotateX(-65deg);
+    }
+    .scroll-reveal.countdown-from-top {
+      transform: translateY(-34px) rotateX(65deg);
+    }
+    .scroll-reveal.countdown-from-right {
+      transform: translateX(38px) rotateY(70deg);
+    }
+    .scroll-reveal.is-visible.reveal-fade,
+    .scroll-reveal.is-visible.reveal-pop,
+    .scroll-reveal.is-visible.reveal-slide-left,
+    .scroll-reveal.is-visible.reveal-slide-right,
+    .scroll-reveal.is-visible.countdown-from-left,
+    .scroll-reveal.is-visible.countdown-from-bottom,
+    .scroll-reveal.is-visible.countdown-from-top,
+    .scroll-reveal.is-visible.countdown-from-right {
+      transform: none;
+    }
+    #countdownClock .countdown-tile:nth-child(2),
+    #locationCard .space-y-4 > div:nth-child(2),
+    #giftsSection .gift-card:nth-child(2) { transition-delay: 80ms; }
+    #countdownClock .countdown-tile:nth-child(3),
+    #locationCard .space-y-4 > div:nth-child(3),
+    #giftsSection .gift-card:nth-child(3) { transition-delay: 160ms; }
+    #countdownClock .countdown-tile:nth-child(4),
+    #giftsSection .gift-card:nth-child(4) { transition-delay: 240ms; }
+    #giftsSection .gift-card:nth-child(5) { transition-delay: 320ms; }
+
+    #storybookEnding {
+      background: linear-gradient(180deg, #eaf5f1 0%, #fffdf9 68%);
+      isolation: isolate;
+    }
+    .storybook-title-arch {
+      border-radius: 50% 50% 1.75rem 1.75rem / 55% 55% 1.75rem 1.75rem;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .animate-tigger-bounce,
+      .animate-cart-walk,
+      .animate-gentle-sway,
+      .animate-piglet-hug,
+      .animate-seal,
+      .animate-float,
+      .animate-wave,
+      .animate-bee,
+      .animate-bounce,
+      .animate-pulse,
+      .garden-character {
+        animation: none;
+      }
+
+      .scroll-reveal,
+      .scroll-reveal.reveal-fade,
+      .scroll-reveal.reveal-pop,
+      .scroll-reveal.reveal-slide-left,
+      .scroll-reveal.reveal-slide-right,
+      .scroll-reveal.countdown-from-left,
+      .scroll-reveal.countdown-from-bottom,
+      .scroll-reveal.countdown-from-top,
+      .scroll-reveal.countdown-from-right {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+    }
+
+    @keyframes waveGentle {
+      0%, 100% { transform: rotate(-2deg) translateY(0); }
+      50% { transform: rotate(3deg) translateY(-6px); }
+    }
+    .animate-wave {
+      transform-origin: bottom center;
+      animation: waveGentle 3.4s ease-in-out infinite;
+    }
+
+    @keyframes beeFlight {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(12px, -10px) rotate(8deg); }
+      50% { transform: translate(0, -18px) rotate(-4deg); }
+      75% { transform: translate(-12px, -8px) rotate(-10deg); }
+      100% { transform: translate(0, 0) rotate(0deg); }
+    }
+    .animate-bee {
+      animation: beeFlight 5.5s ease-in-out infinite;
+    }
+
+    /* Tarjeta estilo Tarro de Miel */
+    .honey-pot {
+      background: linear-gradient(180deg, #FFFDF9 0%, #FFF8D6 100%);
+      border: 2px solid #F6BD60;
+      border-radius: 1.5rem 1.5rem 2rem 2rem;
+      position: relative;
+    }
+    .honey-pot::before {
+      content: '';
+      position: absolute;
+      top: -6px;
+      left: 14%;
+      right: 14%;
+      height: 10px;
+      background: #F6BD60;
+      border-radius: 999px;
+    }
+
+    /* Sombra suave para los PNG transparentes */
+    .pooh-shadow {
+      filter: drop-shadow(0 12px 16px rgba(92, 64, 51, 0.14));
+    }
+
+    /* Ocultar scrollbar en pantalla inicial bloqueada */
+    body.locked {
+      overflow: hidden;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body class="paper-texture locked selection:bg-blush selection:text-cocoa">
+
+  <!-- =========================================================
+       BOTÓN FLOTANTE DE MÚSICA DE CUNA (WEB AUDIO API)
+  ========================================================== -->
+  <button id="audioToggleBtn" aria-label="Activar melodía de cuna" aria-pressed="false"
+    class="fixed bottom-5 right-5 z-50 hidden items-center gap-2 bg-cream/90 backdrop-blur-md border border-honey-gold/60 text-cocoa px-3.5 py-2.5 rounded-full shadow-storybook active:scale-95 transition">
+    <span id="audioIcon" class="text-lg">🎵</span>
+    <span id="audioLabel" class="text-xs font-bold tracking-wide">Música</span>
+  </button>
+
+  <!-- =========================================================
+       PANTALLA 1: EL SOBRE INTERACTIVO (HERO INICIAL)
+  ========================================================== -->
+  <section id="envelopeOverlay"
+    class="fixed inset-0 z-40 flex flex-col items-center justify-center px-5 paper-texture overflow-hidden">
+    
+    <!-- Manchas acuarela de fondo -->
+    <div class="watercolor-blob w-72 h-72 bg-blush/60 absolute -top-10 -left-12"></div>
+    <div class="watercolor-blob w-80 h-80 bg-honey/70 absolute -bottom-16 -right-12"></div>
+
+    <!-- Abejitas ilustradas flotando -->
+    <div class="absolute top-14 left-8 text-2xl animate-bee select-none" aria-hidden="true">🐝</div>
+    <div class="absolute top-24 right-10 text-xl animate-bee select-none" style="animation-delay: 1.5s;" aria-hidden="true">🐝</div>
+    <div class="absolute bottom-20 left-12 text-xl animate-bee select-none" style="animation-delay: 2.8s;" aria-hidden="true">✨</div>
+
+    <!-- Encabezado sutil sobre el sobre -->
+    <div id="envelopeHeader" class="text-center mb-7 z-10">
+      <p class="text-xs uppercase tracking-[0.25em] text-cocoa-light font-bold mb-1">Una dulce historia comienza</p>
+      <h1 class="font-script text-4xl sm:text-5xl text-cocoa">Baby Shower de Zoe</h1>
+    </div>
+
+    <!-- Sobre Interactivo 3D -->
+    <div id="envelopeBox" role="button" tabindex="0" aria-label="Abrir invitación de Zoe" aria-expanded="false"
+      class="envelope-container relative w-full max-w-[350px] sm:max-w-[390px] aspect-[4/3] cursor-pointer group z-10 select-none">
+      
+      <!-- Cuerpo trasero del sobre -->
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#FCE4E8] via-[#FADADD] to-[#F4ACB7] shadow-2xl border border-white/80 overflow-hidden">
+        
+        <!-- Tarjeta interior que asoma al abrirse -->
+        <div id="envelopeCard"
+          class="absolute inset-x-4 top-4 bottom-3 bg-cream rounded-xl shadow-md p-4 flex flex-col items-center justify-center text-center border border-honey-gold/40">
+          <span class="text-xs uppercase tracking-widest text-blush-deep font-bold">¡Estás invitado!</span>
+          <p class="font-script text-4xl text-cocoa mt-1">Zoe</p>
+          <p class="text-xs text-cocoa-light mt-1">Domingo, 6 de Diciembre • 2026</p>
+        </div>
+
+        <!-- Pliegues laterales e inferior del sobre -->
+        <div class="absolute inset-0 pointer-events-none"
+          style="background: linear-gradient(135deg, rgba(255,253,249,0.55) 0%, transparent 48%), linear-gradient(225deg, rgba(255,253,249,0.55) 0%, transparent 48%);">
+        </div>
+        <div class="absolute inset-x-0 bottom-0 h-[58%] bg-gradient-to-t from-[#F7C5CE] to-[#FADADD] border-t border-white/60 pointer-events-none"
+          style="clip-path: polygon(0 100%, 50% 18%, 100% 100%);">
+        </div>
+
+        <!-- Solapa superior animada -->
+        <div id="envelopeFlap"
+          class="envelope-flap absolute inset-x-0 top-0 h-[62%] bg-gradient-to-b from-[#F4ACB7] to-[#FADADD] shadow-md z-20">
+        </div>
+      </div>
+
+      <!-- Sello de Lacre Interactivo -->
+      <div id="waxSealBtn"
+        class="wax-seal animate-seal absolute left-1/2 top-[47%] -translate-x-1/2 -translate-y-1/2 z-30 w-24 h-24 rounded-full flex flex-col items-center justify-center text-cream shadow-wax">
+        <span class="font-script text-3xl leading-none drop-shadow">Zoe</span>
+        <span class="text-[10px] font-bold uppercase tracking-wider mt-1 text-honey-light">Ábreme</span>
+      </div>
+    </div>
+
+    <p id="envelopeHint" class="mt-7 text-sm font-semibold text-cocoa-light animate-pulse z-10">
+      ✨ Toca el sello de lacre para abrir tu invitación ✨
+    </p>
+  </section>
+
+  <!-- =========================================================
+       CONTENIDO PRINCIPAL (SCROLLYTELLING)
+  ========================================================== -->
+  <main id="mainStory" class="opacity-0 pointer-events-none">
+
+    <!-- =======================================================
+         PANTALLA 2: BIENVENIDA Y SALUDO PARALLAX DE BABY POOH
+    ======================================================== -->
+    <section id="heroStory" class="relative min-h-[100svh] flex flex-col justify-between pt-8 pb-12 overflow-hidden">
+      
+      <!-- Capas de Paisaje Ilustrado en Acuarela (Parallax) -->
+      <div class="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+        <!-- Cielo cálido -->
+        <div class="absolute inset-0 bg-gradient-to-b from-[#FFF0F3] via-[#FFFDF9] to-[#FFF8D6]/60"></div>
+
+        <!-- Nubes acuarela suaves (Capa Parallax 1) -->
+        <div class="parallax-cloud absolute top-10 -left-10 w-48 h-20 bg-white/80 rounded-full blur-md"></div>
+        <div class="parallax-cloud absolute top-24 -right-8 w-56 h-24 bg-blush-light/90 rounded-full blur-md"></div>
+
+        <!-- Rama y Colmena con miel goteando -->
+        <svg class="parallax-hive absolute top-4 right-2 w-28 h-28 opacity-90" viewBox="0 0 120 120" fill="none">
+          <path d="M120 14 Q75 18 45 8" stroke="#8A6A5C" stroke-width="5" stroke-linecap="round"/>
+          <ellipse cx="68" cy="44" rx="22" ry="26" fill="#F6BD60"/>
+          <path d="M47 36 Q68 42 89 36 M46 46 Q68 52 90 46 M50 56 Q68 61 86 56" stroke="#D99B26" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M68 70 Q68 83 64 86 Q68 90 72 86 Q68 83 68 70Z" fill="#F6BD60"/>
+        </svg>
+
+        <!-- Colinas verde pastel y flores en el horizonte -->
+        <svg class="parallax-hill absolute bottom-0 inset-x-0 w-full h-44 preserve-3d" viewBox="0 0 400 140" preserveAspectRatio="none">
+          <path d="M0 70 Q110 20 240 65 T400 45 L400 140 L0 140 Z" fill="#E3ECE6" opacity="0.75"/>
+          <path d="M0 95 Q150 50 290 90 T400 75 L400 140 L0 140 Z" fill="#D8E2DC" opacity="0.9"/>
+        </svg>
+      </div>
+
+      <!-- Encabezado Editorial -->
+      <header class="relative z-10 text-center px-6 pt-2">
+        <span class="inline-block px-4 py-1 rounded-full bg-blush/60 text-cocoa text-xs font-bold tracking-[0.2em] uppercase mb-2">
+          Un dulce cuento en el Bosque de los Cien Acres
+        </span>
+        <p class="font-serif italic text-base sm:text-lg text-cocoa-light">
+          Con el corazón rebosante de amor, te invitamos al Baby Shower de
+        </p>
+        <h1 class="font-script text-7xl sm:text-8xl text-cocoa drop-shadow-sm my-1 leading-tight">
+          Zoe
+        </h1>
+        <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-cream/90 border border-blush-rose/50 shadow-sm mt-1">
+          <span class="text-xs uppercase tracking-widest text-cocoa-light font-semibold">Sus papitos:</span>
+          <span class="font-serif font-bold text-sm sm:text-base text-cocoa">Santiago Bettin &amp; Dayanna Cárdenas</span>
+        </div>
+      </header>
+
+      <!-- Ilustración 1: Pooh niña con globos rosas saludando (Prioridad alta, sin lazy) -->
+      <div class="relative z-10 flex flex-col items-center justify-center my-4 px-4">
+        <div id="poohBalloonsWrapper" class="relative w-64 sm:w-72">
+          <img
+            id="poohBalloonsImg"
+            src="img/winnie_pooh_nina_con_globos-removebg-preview.png"
+            alt="Baby Winnie the Pooh niña con globos rosas saludando"
+            class="w-full h-auto object-contain pooh-shadow animate-wave select-none"
+            onerror="handleImgFallback(this, '🎈🧸')"
+          />
+        </div>
+        <div class="mt-2 flex flex-col items-center text-cocoa-light/80 animate-bounce">
+          <span class="text-xs font-semibold tracking-wider uppercase">Desliza para leer nuestro cuento</span>
+          <span class="text-base">↓</span>
+        </div>
+      </div>
+
+      <!-- Tarjeta Cuento de Bienvenida + Ilustración 2: Pooh niña leyendo -->
+      <div class="relative z-10 max-w-md mx-auto px-5 mt-4">
+        <article class="reveal-card scroll-reveal reveal-fade bg-cream/95 backdrop-blur-sm rounded-[2rem] p-6 sm:p-8 shadow-storybook border border-blush-rose/40 text-center relative">
+          
+          <!-- Ilustración 2: Pooh leyendo un libro (Sin lazy para aparición rápida) -->
+          <div class="w-40 sm:w-44 mx-auto -mt-16 mb-3">
+            <img
+              src="img/winnie_pooh_nina_leyendo_un_libro-removebg-preview.png"
+              alt="Baby Winnie the Pooh niña leyendo un cuento"
+              class="w-full h-auto object-contain pooh-shadow animate-float"
+              onerror="handleImgFallback(this, '📖🍯')"
+            />
+          </div>
+
+          <h2 class="font-serif text-2xl sm:text-3xl text-cocoa font-bold mb-3">
+            Capítulo I: La Dulce Espera
+          </h2>
+          <p class="text-sm sm:text-base leading-relaxed text-cocoa/90 mb-4">
+            Hay aventuras que comienzan antes de dar el primer paso, y la nuestra tiene nombre de princesa: <strong class="text-cocoa font-bold">Zoe</strong>.
+          </p>
+          <p class="text-sm sm:text-base leading-relaxed text-cocoa/90">
+            Queremos celebrar su próxima llegada rodeados de las personas que más amamos. Ven a compartir risas, abrazos y buenos deseos en una tarde pensada con todo nuestro cariño.
+          </p>
+          <div class="mt-5 pt-4 border-t border-blush/60 flex items-center justify-center gap-2 text-xs font-bold text-blush-deep uppercase tracking-widest">
+            <span>🌸</span>
+            <span>Santiago &amp; Dayanna</span>
+            <span>🌸</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- =======================================================
+         SECCIÓN 3: CUENTA REGRESIVA EN TIEMPO REAL
+    ======================================================== -->
+    <section id="countdownSection" class="relative py-14 px-5 overflow-hidden">
+      <div class="watercolor-blob w-64 h-64 bg-honey/60 absolute top-6 -left-16"></div>
+
+      <div class="max-w-md mx-auto text-center relative z-10">
+        <!-- Ilustración 3: Pooh abejita comiendo miel -->
+        <div class="w-36 sm:w-40 mx-auto mb-2 reveal-pop">
+          <img
+            src="img/winnie_pooh_con_disfraz_de_abejita_comiendo_miel_muy_feliz-removebg-preview.png"
+            alt="Winnie Pooh disfrazado de abejita comiendo miel feliz"
+            loading="lazy"
+            class="w-full h-auto object-contain pooh-shadow animate-float"
+            onerror="handleImgFallback(this, '🐝🍯')"
+          />
+        </div>
+
+        <span class="text-xs font-bold uppercase tracking-[0.22em] text-honey-amber">Falta muy poquito</span>
+        <h2 class="font-serif text-2xl sm:text-3xl font-bold text-cocoa mt-1 mb-6">
+          Cuenta regresiva para abrazarte
+        </h2>
+
+        <!-- Reloj Tarros de Miel -->
+        <div id="countdownClock" class="grid grid-cols-4 gap-2.5 sm:gap-3.5" role="timer" aria-label="Cuenta regresiva para el Baby Shower">
+          <div class="honey-pot countdown-tile countdown-from-left scroll-reveal py-4 px-2 shadow-honey">
+            <span id="cd-days" class="block font-serif text-2xl sm:text-3xl font-bold text-cocoa">00</span>
+            <span class="block text-[11px] font-bold uppercase tracking-wider text-cocoa-light mt-1">Días</span>
+          </div>
+          <div class="honey-pot countdown-tile countdown-from-bottom scroll-reveal py-4 px-2 shadow-honey">
+            <span id="cd-hours" class="block font-serif text-2xl sm:text-3xl font-bold text-cocoa">00</span>
+            <span class="block text-[11px] font-bold uppercase tracking-wider text-cocoa-light mt-1">Horas</span>
+          </div>
+          <div class="honey-pot countdown-tile countdown-from-top scroll-reveal py-4 px-2 shadow-honey">
+            <span id="cd-minutes" class="block font-serif text-2xl sm:text-3xl font-bold text-cocoa">00</span>
+            <span class="block text-[11px] font-bold uppercase tracking-wider text-cocoa-light mt-1">Min</span>
+          </div>
+          <div class="honey-pot countdown-tile countdown-from-right scroll-reveal py-4 px-2 shadow-honey">
+            <span id="cd-seconds" class="block font-serif text-2xl sm:text-3xl font-bold text-blush-deep">00</span>
+            <span class="block text-[11px] font-bold uppercase tracking-wider text-cocoa-light mt-1">Seg</span>
+          </div>
+        </div>
+
+        <p id="countdownStatus" class="text-xs text-cocoa-light font-semibold mt-4" aria-live="polite">
+          Domingo, 6 de diciembre de 2026 • 4:00 p.m. (Hora Colombia)
+        </p>
+      </div>
+    </section>
+
+    <!-- =======================================================
+         SECCIÓN 4: TRANSICIÓN PERSONAJES + CUÁNDO Y DÓNDE
+    ======================================================== -->
+    <section id="whenWhereSection" class="relative py-14 px-5 overflow-hidden">
+      <div class="watercolor-blob w-72 h-72 bg-blush/50 absolute bottom-10 -right-16"></div>
+
+      <div class="max-w-md mx-auto relative z-10">
+        <!-- Coreografía de entrada: Tigger saltando + Pooh carrito de flores -->
+        <div class="text-center mb-4 scroll-reveal reveal-fade">
+          <span class="text-xs font-bold uppercase tracking-[0.22em] text-blush-deep">Capítulo II</span>
+          <h2 class="when-title font-serif text-3xl sm:text-4xl font-bold text-cocoa mt-1">
+            ¿Cuándo y Dónde?
+          </h2>
+        </div>
+
+        <div class="flex items-end justify-between px-2 -mb-5 relative z-20 pointer-events-none">
+          <img
+            id="tiggerJumpImg"
+            src="img/Tiger_bebe-removebg-preview.png"
+            alt="Tigger bebé saltando de alegría"
+            loading="lazy"
+            class="w-28 sm:w-32 h-auto object-contain pooh-shadow animate-tigger-bounce"
+            onerror="handleImgFallback(this, '🐯✨')"
+          />
+          <img
+            id="poohCartImg"
+            src="img/winnie_pooh_nina_con_carro_de_flores-removebg-preview.png"
+            alt="Baby Winnie Pooh niña con carrito de flores"
+            loading="lazy"
+            class="w-36 sm:w-40 h-auto object-contain pooh-shadow animate-cart-walk"
+            onerror="handleImgFallback(this, '🛒🌸')"
+          />
+        </div>
+
+        <!-- Tarjeta Principal de Ubicación -->
+        <div id="locationCard" class="bg-cream rounded-[2rem] p-6 sm:p-8 shadow-storybook border border-blush-rose/50 relative">
+          
+          <div class="space-y-4 text-left mt-2">
+            <!-- Fecha y Hora -->
+            <div class="scroll-reveal reveal-slide-left flex items-start gap-3.5 p-3.5 rounded-2xl bg-blush-light/70 border border-blush/60">
+              <span class="text-2xl mt-0.5">🗓️</span>
+              <div>
+                <p class="text-xs font-bold uppercase tracking-wider text-blush-deep">Fecha y Hora</p>
+                <p class="font-serif font-bold text-base sm:text-lg text-cocoa">Domingo, 6 de diciembre de 2026</p>
+                <p class="text-sm font-semibold text-cocoa-light">4:00 p.m. a 7:00 p.m.</p>
+              </div>
+            </div>
+
+            <!-- Lugar y Dirección -->
+            <div class="scroll-reveal reveal-slide-right flex items-start gap-3.5 p-3.5 rounded-2xl bg-honey-light/70 border border-honey-gold/40">
+              <span class="text-2xl mt-0.5">📍</span>
+              <div>
+                <p class="text-xs font-bold uppercase tracking-wider text-honey-amber">Lugar de encuentro</p>
+                <p class="font-serif font-bold text-base sm:text-lg text-cocoa">Salón Comunal JAC El Descanso</p>
+                <p class="text-sm text-cocoa-light font-medium">Kennedy, Bogotá</p>
+                <p class="text-sm font-bold text-cocoa mt-0.5">Carrera 78L # 45-75 Sur, Bogotá</p>
+              </div>
+            </div>
+
+            <!-- Código de vestimenta -->
+            <div class="scroll-reveal reveal-slide-left flex items-start gap-3.5 p-3.5 rounded-2xl bg-sage/35 border border-sage">
+              <span class="text-2xl mt-0.5">🎀</span>
+              <div>
+                <p class="text-xs font-bold uppercase tracking-wider text-cocoa-light">Código de vestimenta</p>
+                <p class="text-sm font-bold text-cocoa">Sin código de vestimenta</p>
+                <p class="text-xs sm:text-sm italic text-cocoa-light mt-0.5">
+                  ¡Solo traer la mejor actitud y muchas ganas de compartir!
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Detalle decorativo: Pooh abrazando a Tigger -->
+          <div class="flex justify-center my-4 scroll-reveal reveal-fade">
+            <img
+              src="img/winnie_pooh_abrazando_a_tiger_con_mucho_carino-removebg-preview.png"
+              alt="Winnie Pooh abrazando a Tigger con mucho cariño"
+              loading="lazy"
+              class="w-32 sm:w-36 h-auto object-contain pooh-shadow animate-gentle-sway"
+              onerror="handleImgFallback(this, '🧸🤗🐯')"
+            />
+          </div>
+
+          <!-- Dos Botones Interactivos de Acción -->
+          <div class="grid grid-cols-1 gap-3 mt-2">
+            <a
+              href="https://www.google.com/maps/search/?api=1&query=Carrera+78L+%2345-75+Sur,+Bogota"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center justify-center gap-2.5 w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-blush-rose to-[#EA96A4] text-white font-bold text-sm sm:text-base shadow-md hover:brightness-105 active:scale-[0.98] transition">
+              <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/></svg>
+              <span>Cómo llegar (Google Maps)</span>
+            </a>
+
+            <a
+              href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Baby+Shower+de+Zoe+%F0%9F%8D%AF%F0%9F%8C%B8&dates=20261206T210000Z/20261207T000000Z&details=Celebraci%C3%B3n+del+Baby+Shower+de+Zoe%2C+hija+de+Santiago+Bettin+y+Dayanna+C%C3%A1rdenas.+%C2%A1Te+esperamos+con+mucho+cari%C3%B1o!&location=Sal%C3%B3n+Comunal+JAC+El+Descanso%2C+Carrera+78L+%23+45-75+Sur%2C+Kennedy%2C+Bogot%C3%A1"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center justify-center gap-2.5 w-full py-3.5 px-5 rounded-2xl bg-honey-light border-2 border-honey-gold text-cocoa font-bold text-sm sm:text-base hover:bg-honey active:scale-[0.98] transition">
+              <svg class="w-5 h-5 fill-current text-honey-amber" viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 002 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg>
+              <span>Agendar en mi calendario</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================
+         SECCIÓN 5: DETALLES CON AMOR PARA ZOE (5 CATEGORÍAS)
+    ======================================================== -->
+    <section id="giftsSection" class="relative py-14 px-5 overflow-hidden">
+      <div class="watercolor-blob w-80 h-80 bg-honey/50 absolute top-24 -left-20"></div>
+
+      <div class="max-w-md mx-auto relative z-10">
+        <!-- Encabezado animado con Ígor bebé y Piglet -->
+        <div class="text-center mb-3">
+          <span class="text-xs font-bold uppercase tracking-[0.22em] text-honey-amber">Capítulo III</span>
+          <h2 class="gifts-title font-serif text-3xl sm:text-4xl font-bold text-cocoa mt-1">
+            Detalles con Amor para Zoe
+          </h2>
+          <p class="text-xs sm:text-sm text-cocoa-light mt-2 max-w-xs mx-auto">
+            Si deseas consentir a nuestra princesa, aquí te dejamos algunas ideas pensadas con mucho cariño:
+          </p>
+        </div>
+
+        <div class="flex items-end justify-center gap-6 my-3">
+          <img
+            id="eeyoreImg"
+            src="img/Burro_bebe-removebg-preview.png"
+            alt="Ígor bebé tierno"
+            loading="lazy"
+            class="w-28 sm:w-32 h-auto object-contain pooh-shadow animate-gentle-sway"
+            onerror="handleImgFallback(this, '🐴🎀')"
+          />
+          <img
+            id="pigletImg"
+            src="img/Piglet_con_oso_de_peluche-removebg-preview.png"
+            alt="Piglet abrazando su osito de peluche"
+            loading="lazy"
+            class="w-28 sm:w-32 h-auto object-contain pooh-shadow animate-piglet-hug"
+            onerror="handleImgFallback(this, '🐷🧸')"
+          />
+        </div>
+
+        <!-- 4 Categorías de Regalos en Tarjetas Pastel -->
+        <div class="space-y-3.5 mt-4">
+          
+          <!-- Categoría 1: Ropa -->
+          <div class="gift-card scroll-reveal reveal-pop bg-cream/95 rounded-2xl p-5 shadow-sm border border-blush-rose/40 transition hover:shadow-md">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="w-10 h-10 rounded-xl bg-blush flex items-center justify-center text-xl shrink-0">👗</span>
+              <h3 class="font-serif font-bold text-lg text-cocoa">Ropa (Clima frío Bogotá)</h3>
+            </div>
+            <p class="text-sm text-cocoa/90 leading-relaxed">
+              Mamelucos o pijamas enterizas térmicas, bodies manga larga en algodón (<strong>tallas 0-3, 3-6 o 6-9 meses</strong>), cobijitas suaves, gorritos, mitones y medias térmicas.
+            </p>
+          </div>
+
+          <!-- Categoría 2: Pañales y Pañitos -->
+          <div class="gift-card scroll-reveal reveal-pop bg-cream/95 rounded-2xl p-5 shadow-sm border border-honey-gold/50 transition hover:shadow-md">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="w-10 h-10 rounded-xl bg-honey flex items-center justify-center text-xl shrink-0">🍼</span>
+              <h3 class="font-serif font-bold text-lg text-cocoa">Pañales y Pañitos</h3>
+            </div>
+            <p class="text-sm text-cocoa/90 leading-relaxed">
+              Pañales en <strong>Etapas 1, 2 o 3</strong> y pañitos húmedos (referencia sugerida <strong>Huggies</strong>, <em>recordando con mucho cariño que cualquier marca es bienvenida</em>).
+            </p>
+          </div>
+
+          <!-- Categoría 3: Aseo y Cuidado -->
+          <div class="gift-card scroll-reveal reveal-pop bg-cream/95 rounded-2xl p-5 shadow-sm border border-sage transition hover:shadow-md">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="w-10 h-10 rounded-xl bg-sage/60 flex items-center justify-center text-xl shrink-0">🛁</span>
+              <h3 class="font-serif font-bold text-lg text-cocoa">Aseo y Cuidado</h3>
+            </div>
+            <p class="text-sm text-cocoa/90 leading-relaxed">
+              Kits de aseo para bebé (cortaúñas, lima suave, cepillo, aspirador nasal), crema antipañalitis, toalla con capucha, jabón/shampoo hipoalergénico o termómetro digital.
+            </p>
+          </div>
+
+          <!-- Categoría 4: El regalo que prefieras -->
+          <div class="gift-card scroll-reveal reveal-pop bg-cream/95 rounded-2xl p-5 shadow-sm border border-blush-rose/40 transition hover:shadow-md">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="w-10 h-10 rounded-xl bg-blush-light flex items-center justify-center text-xl shrink-0">🎁</span>
+              <h3 class="font-serif font-bold text-lg text-cocoa">El regalo que prefieras</h3>
+            </div>
+            <p class="text-sm text-cocoa/90 leading-relaxed">
+              Cualquier otro detalle práctico para el cuarto o cuidado de Zoe (o lluvia de sobres voluntaria).
+            </p>
+          </div>
+
+          <!-- Categoría 5 (Tarjeta Destacada): Lo más importante es tu presencia -->
+          <div class="gift-card scroll-reveal reveal-pop mt-6 rounded-[2rem] p-6 bg-gradient-to-br from-blush-light via-cream to-honey-light border-2 border-blush-rose/70 shadow-storybook text-center relative overflow-hidden">
+            <div class="w-32 sm:w-36 mx-auto mb-2">
+              <img
+                src="img/winnie_pooh_nina_abrazando_un_jarron_de_miel-removebg-preview.png"
+                alt="Baby Winnie Pooh niña abrazando un jarrón de miel rosa"
+                loading="lazy"
+                class="w-full h-auto object-contain pooh-shadow animate-float"
+                onerror="handleImgFallback(this, '🍯💕')"
+              />
+            </div>
+            <span class="inline-block text-xs font-bold uppercase tracking-widest text-blush-deep mb-1">
+              💕 Lo más importante
+            </span>
+            <p class="font-serif italic text-base sm:text-lg text-cocoa font-medium leading-relaxed">
+              “Más allá de cualquier regalo, lo más importante para nosotros es tu presencia y compartir contigo este día tan especial.”
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================
+         SECCIÓN 6: CONFIRMACIÓN DE ASISTENCIA (RSVP INTUITIVO)
+    ======================================================== -->
+    <section id="rsvpSection" class="relative py-14 px-5 overflow-hidden">
+      <div class="max-w-md mx-auto relative z-10">
+        
+        <div class="bg-cream rounded-[2rem] p-6 sm:p-8 shadow-storybook border border-honey-gold/60 relative">
+          <!-- Ilustración 8: Pooh niña con canasta de flores -->
+          <div class="w-36 sm:w-40 mx-auto -mt-16 mb-2 scroll-reveal reveal-pop">
+            <img
+              src="img/winnie_pooh_nina_con_canasta_de_flores-removebg-preview.png"
+              alt="Baby Winnie Pooh niña con canasta de flores"
+              loading="lazy"
+              class="w-full h-auto object-contain pooh-shadow animate-float"
+              onerror="handleImgFallback(this, '🧺🌷')"
+            />
+          </div>
+
+          <div class="text-center mb-5">
+            <span class="text-xs font-bold uppercase tracking-[0.22em] text-blush-deep">Capítulo IV</span>
+            <h2 class="font-serif text-2xl sm:text-3xl font-bold text-cocoa mt-1">
+              Confirma tu Asistencia
+            </h2>
+            <div class="mt-3 p-3 rounded-2xl bg-honey-light/90 border border-honey-gold/60 text-xs sm:text-sm text-cocoa font-semibold">
+              ⏳ Por favor confírmanos tu asistencia <strong>antes del 30 de noviembre</strong> para organizar la comida y los recordatorios.
+            </div>
+          </div>
+
+          <form id="rsvpForm" class="space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label for="firstName" class="block text-xs font-bold uppercase tracking-wider text-cocoa mb-1.5">
+                  Nombre *
+                </label>
+                <input
+                  type="text"
+                  id="firstName"
+                  name="firstName"
+                  required
+                  maxlength="80"
+                  autocomplete="given-name"
+                  placeholder="Camila"
+                  class="w-full px-4 py-3.5 rounded-2xl bg-white border border-blush-rose/60 text-cocoa placeholder:text-cocoa-light/50 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blush-rose transition"
+                />
+              </div>
+              <div>
+                <label for="lastName" class="block text-xs font-bold uppercase tracking-wider text-cocoa mb-1.5">
+                  Apellido *
+                </label>
+                <input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  required
+                  maxlength="100"
+                  autocomplete="family-name"
+                  placeholder="Rodríguez"
+                  class="w-full px-4 py-3.5 rounded-2xl bg-white border border-blush-rose/60 text-cocoa placeholder:text-cocoa-light/50 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blush-rose transition"
+                />
+              </div>
+            </div>
+
+            <!-- Selector visual tipo tarjeta -->
+            <div>
+              <span class="block text-xs font-bold uppercase tracking-wider text-cocoa mb-2">
+                ¿Nos acompañas? *
+              </span>
+              <div class="grid grid-cols-1 gap-2.5">
+                <label class="cursor-pointer relative">
+                  <input type="radio" name="attendance" value="si" class="peer sr-only" checked />
+                  <div class="p-3.5 rounded-2xl border-2 border-blush/80 bg-white peer-checked:border-blush-deep peer-checked:bg-blush-light/60 transition flex items-center gap-3">
+                    <span class="text-xl">🥳</span>
+                    <span class="text-sm font-bold text-cocoa">¡Sí, allí estaré celebrando a Zoe!</span>
+                  </div>
+                </label>
+
+                <label class="cursor-pointer relative">
+                  <input type="radio" name="attendance" value="no" class="peer sr-only" />
+                  <div class="p-3.5 rounded-2xl border-2 border-blush/80 bg-white peer-checked:border-honey-amber peer-checked:bg-honey-light/60 transition flex items-center gap-3">
+                    <span class="text-xl">💌</span>
+                    <span class="text-sm font-bold text-cocoa">No podré asistir, pero les envío todo mi cariño</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Campo opcional: Detalle o deseo -->
+            <div>
+              <label for="guestMessage" class="block text-xs font-bold uppercase tracking-wider text-cocoa mb-1.5">
+                Un mensaje para Zoe (opcional)
+              </label>
+              <textarea
+                id="guestMessage"
+                name="guestMessage"
+                rows="3"
+                placeholder="Déjanos un mensaje lleno de cariño..."
+                class="w-full px-4 py-3.5 rounded-2xl bg-white border border-blush-rose/60 text-cocoa placeholder:text-cocoa-light/50 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blush-rose transition"
+              ></textarea>
+            </div>
+            <button
+              type="submit"
+              class="flex items-center justify-center gap-2.5 w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-blush-rose to-[#EA96A4] text-white font-bold text-sm sm:text-base shadow-md hover:brightness-105 active:scale-[0.98] transition focus:outline-none focus:ring-2 focus:ring-blush-deep focus:ring-offset-2"
+            >
+              <span>Enviar confirmación</span>
+              <span aria-hidden="true">💌</span>
+            </button>
+            <p id="rsvpStatus" class="text-sm text-center font-semibold text-cocoa-light" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </div>
+    </section>
+    <footer id="storybookEnding" class="relative overflow-hidden px-4 pt-12 pb-8 sm:pt-16" aria-labelledby="endingTitle">
+      <svg class="absolute inset-x-0 bottom-0 z-0 h-72 w-full" viewBox="0 0 1200 360" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 174 145 77l115 93 164-118 146 122L743 60l154 123 143-101 160 105v173H0Z" fill="#d8e2dc"/>
+        <path d="M0 212q170-90 335-10t350 6q175-81 515-18v170H0Z" fill="#c6dccb"/>
+        <path d="M0 249q205-71 426-10t372 0q198-72 402-6v137H0Z" fill="#a9cba8"/>
+        <path d="M0 283q180-39 365-9t376 1q220-43 459-1v96H0Z" fill="#8fbb82"/>
+        <path d="M0 326q250-35 468-6t372-2q180-23 360 2v40H0Z" fill="#78a96c"/>
+      </svg>
+
+      <div class="absolute left-[8%] top-10 z-10 text-5xl sm:text-6xl" aria-hidden="true">☀️</div>
+
+      <svg class="absolute right-[4%] top-8 z-10 hidden h-56 w-40 sm:block" viewBox="0 0 180 250" fill="none" aria-hidden="true">
+        <path d="M91 245c-5-50 4-89-3-137" stroke="#8A6A5C" stroke-width="15" stroke-linecap="round"/>
+        <path d="M89 164 49 116M91 143l39-48" stroke="#8A6A5C" stroke-width="9" stroke-linecap="round"/>
+        <path d="M43 118c-31-5-37-35-14-50 0-30 41-43 59-21 25-23 65-7 62 25 31 16 22 52-2 57-10 29-52 35-68 12-15 17-44 7-37-23Z" fill="#8FAF7C"/>
+        <circle cx="51" cy="67" r="19" fill="#A8C797" opacity=".8"/>
+        <circle cx="112" cy="55" r="23" fill="#A8C797" opacity=".7"/>
+      </svg>
+
+      <div class="relative z-20 mx-auto max-w-6xl">
+        <div class="storybook-title-arch scroll-reveal reveal-pop mx-auto max-w-xl border border-blush-rose/50 bg-cream/90 px-6 pb-5 pt-8 text-center shadow-storybook">
+          <span class="text-xs font-bold uppercase tracking-[0.22em] text-honey-amber">Un abrazo te espera</span>
+          <h2 id="endingTitle" class="mt-1 font-script text-4xl font-bold text-cocoa sm:text-5xl">¡No faltes, te esperamos!</h2>
+          <p class="mt-2 text-sm font-semibold text-cocoa-light">Con mucho amor, Santiago, Dayanna y Zoe</p>
+        </div>
+
+        <div class="relative z-20 mt-7 grid grid-cols-4 items-end gap-x-1 gap-y-3 sm:grid-cols-6 sm:gap-x-3 lg:grid-cols-12" aria-label="Los amigos de Zoe en el prado">
+          <div class="flex h-24 items-end justify-center sm:h-32"><img class="garden-character max-h-full max-w-full object-contain pooh-shadow" src="img/Burro_bebe-removebg-preview.png" alt="" loading="lazy" /></div>
+          <div class="flex h-24 items-end justify-center sm:h-32"><img class="garden-character max-h-full max-w-full object-contain pooh-shadow" src="img/Piglet_con_oso_de_peluche-removebg-preview.png" alt="" loading="lazy" /></div>
+          <div class="flex h-24 items-end justify-center sm:h-32"><img class="garden-character max-h-full max-w-full object-contain pooh-shadow" src="img/Tiger_bebe-removebg-preview.png" alt="" loading="lazy" /></div>
+          <div class="flex h-24 items-end justify-center sm:h-32"><img class="garden-character max-h-full max-w-full object-contain pooh-shadow" src="img/winnie_pooh_abrazando_a_tiger_con_mucho_carino-removebg-preview.png" alt="" loading="lazy" /></div>
+          <div class="flex h-24 items-end justify-center sm:h-32"><img class="garden-character max-h-full max-w-full object-contain pooh-shadow" src="img/winnie_pooh_con_disfraz_de_abejita_comiendo_miel_muy_feliz-removebg-preview.png" alt="" loading="lazy" /></div>
+          <div class="flex h-24 items-end justify-center sm:h-32"><img class="garden-character max-h-full max-w-full object-contain pooh-shadow" src="img/winnie_pooh_nina_abrazando_un_jarron_de_miel-removebg-preview.png" alt="" loading="lazy" /></div>
+          <div class="flex h-24 items-end justify-center sm:h-32"><img class="garden-character max-h-full max-w-full object-contain pooh-shadow" src="img/winnie_pooh_nina_con_canasta_de_flores-removebg-preview.png" alt="" loading="lazy" /></div>
+          <div class="flex h-24 items-end justify-center sm:h-32"><img class="garden-character max-h-full max-w-full object-contain pooh-shadow" src="img/winnie_pooh_nina_con_carro_de_flores-removebg-preview.png" alt="" loading="lazy" /></div>
+          <div class="flex h-24 items-end justify-center sm:h-32"><img class="garden-character max-h-full max-w-full object-contain pooh-shadow" src="img/winnie_pooh_nina_con_globos-removebg-preview.png" alt="" loading="lazy" /></div>
+          <div class="flex h-24 items-end justify-center sm:h-32"><img class="garden-character max-h-full max-w-full object-contain pooh-shadow" src="img/winnie_pooh_nina_con_ramo_de_flores-removebg-preview.png" alt="" loading="lazy" /></div>
+          <div class="flex h-24 items-end justify-center sm:h-32"><img class="garden-character max-h-full max-w-full object-contain pooh-shadow" src="img/winnie_pooh_nina_con_vestido_princesa-removebg-preview.png" alt="" loading="lazy" /></div>
+          <div class="flex h-24 items-end justify-center sm:h-32"><img class="garden-character max-h-full max-w-full object-contain pooh-shadow" src="img/winnie_pooh_nina_leyendo_un_libro-removebg-preview.png" alt="" loading="lazy" /></div>
+        </div>
+
+        <p class="relative z-20 mt-6 text-center font-serif text-sm italic text-cocoa">Te esperamos para celebrar un día lleno de ternura, miel y mucha alegría. 🍯</p>
+        <p class="relative z-20 mt-3 text-center text-xs font-semibold tracking-wide text-cocoa-light">Creado con ❤️ por Santiago Bettin</p>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    (() => {
+      const eventTime = new Date('2026-12-06T16:00:00-05:00').getTime();
+      const countdownElements = {
+        days: document.getElementById('cd-days'),
+        hours: document.getElementById('cd-hours'),
+        minutes: document.getElementById('cd-minutes'),
+        seconds: document.getElementById('cd-seconds'),
+        status: document.getElementById('countdownStatus')
+      };
+
+      const updateCountdown = () => {
+        const remaining = eventTime - Date.now();
+
+        if (remaining <= 0) {
+          countdownElements.days.textContent = '00';
+          countdownElements.hours.textContent = '00';
+          countdownElements.minutes.textContent = '00';
+          countdownElements.seconds.textContent = '00';
+          countdownElements.status.textContent = '¡Llegó el gran día! Celebremos juntos a Zoe.';
+          return;
+        }
+
+        const totalSeconds = Math.floor(remaining / 1000);
+        countdownElements.days.textContent = String(Math.floor(totalSeconds / 86400)).padStart(2, '0');
+        countdownElements.hours.textContent = String(Math.floor((totalSeconds % 86400) / 3600)).padStart(2, '0');
+        countdownElements.minutes.textContent = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+        countdownElements.seconds.textContent = String(totalSeconds % 60).padStart(2, '0');
+      };
+
+      updateCountdown();
+      window.setInterval(updateCountdown, 1000);
+
+      const audioToggleButton = document.getElementById('audioToggleBtn');
+      const audioIcon = document.getElementById('audioIcon');
+      const audioLabel = document.getElementById('audioLabel');
+      let audioContext;
+      let musicGain;
+      let musicTimer;
+      let musicPlaying = false;
+      let noteIndex = 0;
+      const lullabyNotes = [523.25, 659.25, 783.99, 659.25, 587.33, 698.46, 783.99, 698.46, 523.25, 587.33, 659.25, null];
+      const AudioContextConstructor = window.AudioContext || window.webkitAudioContext;
+
+      const playLullabyNote = () => {
+        if (!musicPlaying || !audioContext || !musicGain) return;
+
+        const frequency = lullabyNotes[noteIndex];
+        noteIndex = (noteIndex + 1) % lullabyNotes.length;
+
+        if (frequency) {
+          const oscillator = audioContext.createOscillator();
+          const envelope = audioContext.createGain();
+          const now = audioContext.currentTime;
+          oscillator.type = 'sine';
+          oscillator.frequency.value = frequency;
+          envelope.gain.setValueAtTime(0.0001, now);
+          envelope.gain.exponentialRampToValueAtTime(0.22, now + 0.08);
+          envelope.gain.exponentialRampToValueAtTime(0.0001, now + 0.68);
+          oscillator.connect(envelope);
+          envelope.connect(musicGain);
+          oscillator.start(now);
+          oscillator.stop(now + 0.7);
+        }
+
+        musicTimer = window.setTimeout(playLullabyNote, 780);
+      };
+
+      audioToggleButton.addEventListener('click', async () => {
+        if (!AudioContextConstructor) {
+          audioLabel.textContent = 'Audio no disponible';
+          audioToggleButton.setAttribute('aria-label', 'El navegador no permite reproducir la melodía');
+          return;
+        }
+
+        try {
+          if (!audioContext) {
+            audioContext = new AudioContextConstructor();
+            musicGain = audioContext.createGain();
+            musicGain.gain.value = 0;
+            musicGain.connect(audioContext.destination);
+          }
+
+          if (musicPlaying) {
+            musicPlaying = false;
+            window.clearTimeout(musicTimer);
+            musicGain.gain.setTargetAtTime(0, audioContext.currentTime, 0.08);
+            audioIcon.textContent = '🎵';
+            audioLabel.textContent = 'Música';
+            audioToggleButton.setAttribute('aria-label', 'Activar melodía de cuna');
+            audioToggleButton.setAttribute('aria-pressed', 'false');
+            return;
+          }
+
+          await audioContext.resume();
+          musicPlaying = true;
+          musicGain.gain.setTargetAtTime(0.32, audioContext.currentTime, 0.12);
+          audioIcon.textContent = '🔊';
+          audioLabel.textContent = 'Silenciar';
+          audioToggleButton.setAttribute('aria-label', 'Silenciar melodía de cuna');
+          audioToggleButton.setAttribute('aria-pressed', 'true');
+          playLullabyNote();
+        } catch (error) {
+          console.error('No se pudo iniciar la melodía de cuna.', error);
+          musicPlaying = false;
+          audioIcon.textContent = '🎵';
+          audioLabel.textContent = 'Intenta de nuevo';
+          audioToggleButton.setAttribute('aria-pressed', 'false');
+        }
+      });
+
+      // Replace with the URL of the deployed Google Apps Script web app.
+      const RSVP_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwEBQFuRLwLVqW-88tn3REcqL6EC0e53BgJlrl_ZhVi_c2yc_Zu3CmjR1zH6BTCvd3BFg/exec';
+      const rsvpForm = document.getElementById('rsvpForm');
+      const rsvpStatus = document.getElementById('rsvpStatus');
+
+      rsvpForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        if (!rsvpForm.reportValidity()) return;
+
+        const formData = new FormData(rsvpForm);
+        const firstName = String(formData.get('firstName')).trim();
+        const lastName = String(formData.get('lastName')).trim();
+        const attendance = formData.get('attendance') === 'si' ? 'Sí, asistirá' : 'No asistirá';
+        const message = String(formData.get('guestMessage')).trim();
+
+        if (RSVP_WEB_APP_URL) {
+          const submission = document.createElement('form');
+          submission.method = 'POST';
+          submission.action = RSVP_WEB_APP_URL;
+          submission.target = '_blank';
+
+          for (const [name, value] of Object.entries({ firstName, lastName, attendance: formData.get('attendance'), message })) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = name;
+            input.value = value;
+            submission.append(input);
+          }
+
+          document.body.append(submission);
+          submission.submit();
+          window.setTimeout(() => submission.remove(), 10000);
+          rsvpStatus.textContent = 'Se abrió una pestaña nueva para registrar tu confirmación.';
+          return;
+        }
+
+        const subject = encodeURIComponent('Confirmación Baby Shower de Zoe');
+        const body = encodeURIComponent(
+          `Nombre: ${firstName}\nApellido: ${lastName}\nAsistencia: ${attendance}${message ? `\nMensaje: ${message}` : ''}`
+        );
+        window.location.href = `mailto:confirmacionesbabyshowerzoe@gmail.com?subject=${subject}&body=${body}`;
+        rsvpStatus.textContent = 'Se abrió tu correo para enviar la confirmación. El registro automático en Sheets aún requiere activar la conexión.';
+      });
+
+      const envelope = document.getElementById('envelopeBox');
+      const overlay = document.getElementById('envelopeOverlay');
+      const story = document.getElementById('mainStory');
+      let revealObserver;
+
+      if (!envelope || !overlay || !story || !audioToggleButton) {
+        console.error('No se encontró el sobre o el contenido de la invitación.');
+        return;
+      }
+
+      const startScrollReveals = () => {
+        const elements = story.querySelectorAll('.scroll-reveal');
+
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+          elements.forEach((element) => element.classList.add('is-visible'));
+          return;
+        }
+
+        revealObserver = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            entry.target.classList.toggle('is-visible', entry.isIntersecting);
+          });
+        }, { threshold: 0.08, rootMargin: '0px 0px -6% 0px' });
+
+        elements.forEach((element) => revealObserver.observe(element));
+      };
+
+      let opened = false;
+
+      const openInvitation = () => {
+        if (opened) return;
+        opened = true;
+
+        document.body.classList.remove('locked');
+        document.body.classList.add('invitation-open');
+        story.classList.remove('opacity-0', 'pointer-events-none');
+        audioToggleButton.classList.remove('hidden');
+        audioToggleButton.classList.add('flex');
+        startScrollReveals();
+        envelope.setAttribute('aria-expanded', 'true');
+        overlay.classList.add('is-opening');
+
+        const delay = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 700;
+        window.setTimeout(() => overlay.remove(), delay);
+      };
+
+      envelope.addEventListener('click', openInvitation);
+      envelope.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          openInvitation();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
