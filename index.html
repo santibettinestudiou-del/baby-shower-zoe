@@ -20,6 +20,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
   <!-- Canvas Confetti -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js" defer></script>
+  <!-- YouTube IFrame API -->
+  <script src="https://www.youtube.com/iframe_api" defer></script>
 
   <style>
     :root {
@@ -318,9 +320,12 @@
   </style>
 </head>
 <body class="paper-texture locked selection:bg-blush selection:text-cocoa">
+  <div id="youtubeMusicContainer" class="fixed -left-[9999px] -top-[9999px] size-px overflow-hidden" aria-hidden="true">
+    <div id="youtubeMusicPlayer"></div>
+  </div>
 
   <!-- =========================================================
-       BOTÓN FLOTANTE DE MÚSICA DE CUNA (WEB AUDIO API)
+       BOTÓN FLOTANTE DE MÚSICA
   ========================================================== -->
   <button id="audioToggleBtn" aria-label="Activar melodía de cuna" aria-pressed="false"
     class="fixed bottom-5 right-5 z-50 hidden items-center gap-2 bg-cream/90 backdrop-blur-md border border-honey-gold/60 text-cocoa px-3.5 py-2.5 rounded-full shadow-storybook active:scale-95 transition">
@@ -716,7 +721,7 @@
               <h3 class="font-serif font-bold text-lg text-cocoa">Aseo y Cuidado</h3>
             </div>
             <p class="text-sm text-cocoa/90 leading-relaxed">
-              Kits de aseo para bebé (cortaúñas, lima suave, cepillo, aspirador nasal), crema antipañalitis, toalla con capucha, jabón/shampoo hipoalergénico o termómetro digital.
+              Crema antipañalitis, toalla con capucha y jabón/shampoo hipoalergénico.
             </p>
           </div>
 
@@ -947,74 +952,66 @@
       const audioToggleButton = document.getElementById('audioToggleBtn');
       const audioIcon = document.getElementById('audioIcon');
       const audioLabel = document.getElementById('audioLabel');
-      let audioContext;
-      let musicGain;
-      let musicTimer;
+      let youtubePlayer;
       let musicPlaying = false;
-      let noteIndex = 0;
-      const lullabyNotes = [523.25, 659.25, 783.99, 659.25, 587.33, 698.46, 783.99, 698.46, 523.25, 587.33, 659.25, null];
-      const AudioContextConstructor = window.AudioContext || window.webkitAudioContext;
+      let pendingAutoplay = false;
 
-      const playLullabyNote = () => {
-        if (!musicPlaying || !audioContext || !musicGain) return;
-
-        const frequency = lullabyNotes[noteIndex];
-        noteIndex = (noteIndex + 1) % lullabyNotes.length;
-
-        if (frequency) {
-          const oscillator = audioContext.createOscillator();
-          const envelope = audioContext.createGain();
-          const now = audioContext.currentTime;
-          oscillator.type = 'sine';
-          oscillator.frequency.value = frequency;
-          envelope.gain.setValueAtTime(0.0001, now);
-          envelope.gain.exponentialRampToValueAtTime(0.22, now + 0.08);
-          envelope.gain.exponentialRampToValueAtTime(0.0001, now + 0.68);
-          oscillator.connect(envelope);
-          envelope.connect(musicGain);
-          oscillator.start(now);
-          oscillator.stop(now + 0.7);
-        }
-
-        musicTimer = window.setTimeout(playLullabyNote, 780);
+      window.onYouTubeIframeAPIReady = () => {
+        youtubePlayer = new YT.Player('youtubeMusicPlayer', {
+          height: '1',
+          width: '1',
+          videoId: 'DriCCFRQlj8',
+          playerVars: {
+            autoplay: 0,
+            controls: 0,
+            loop: 1,
+            playlist: 'DriCCFRQlj8',
+            playsinline: 1,
+            rel: 0
+          },
+          events: {
+            onReady: (event) => {
+              event.target.setVolume(45);
+              if (pendingAutoplay) {
+                pendingAutoplay = false;
+                event.target.playVideo();
+                musicPlaying = true;
+                audioIcon.textContent = '🔊';
+                audioLabel.textContent = 'Silenciar';
+                audioToggleButton.setAttribute('aria-label', 'Silenciar Vida de Rico');
+                audioToggleButton.setAttribute('aria-pressed', 'true');
+              }
+            }
+          }
+        });
       };
 
       audioToggleButton.addEventListener('click', async () => {
-        if (!AudioContextConstructor) {
-          audioLabel.textContent = 'Audio no disponible';
-          audioToggleButton.setAttribute('aria-label', 'El navegador no permite reproducir la melodía');
+        if (!youtubePlayer) {
+          pendingAutoplay = !pendingAutoplay;
+          audioLabel.textContent = pendingAutoplay ? 'Cargando...' : 'Música';
           return;
         }
 
         try {
-          if (!audioContext) {
-            audioContext = new AudioContextConstructor();
-            musicGain = audioContext.createGain();
-            musicGain.gain.value = 0;
-            musicGain.connect(audioContext.destination);
-          }
-
           if (musicPlaying) {
             musicPlaying = false;
-            window.clearTimeout(musicTimer);
-            musicGain.gain.setTargetAtTime(0, audioContext.currentTime, 0.08);
+            youtubePlayer.pauseVideo();
             audioIcon.textContent = '🎵';
             audioLabel.textContent = 'Música';
-            audioToggleButton.setAttribute('aria-label', 'Activar melodía de cuna');
+            audioToggleButton.setAttribute('aria-label', 'Activar Vida de Rico');
             audioToggleButton.setAttribute('aria-pressed', 'false');
             return;
           }
 
-          await audioContext.resume();
           musicPlaying = true;
-          musicGain.gain.setTargetAtTime(0.32, audioContext.currentTime, 0.12);
+          youtubePlayer.playVideo();
           audioIcon.textContent = '🔊';
           audioLabel.textContent = 'Silenciar';
-          audioToggleButton.setAttribute('aria-label', 'Silenciar melodía de cuna');
+          audioToggleButton.setAttribute('aria-label', 'Silenciar Vida de Rico');
           audioToggleButton.setAttribute('aria-pressed', 'true');
-          playLullabyNote();
         } catch (error) {
-          console.error('No se pudo iniciar la melodía de cuna.', error);
+          console.error('No se pudo iniciar la música.', error);
           musicPlaying = false;
           audioIcon.textContent = '🎵';
           audioLabel.textContent = 'Intenta de nuevo';
@@ -1095,9 +1092,58 @@
 
       let opened = false;
 
+      const launchConfetti = () => {
+        if (!window.confetti || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        const colors = ['#F4ACB7', '#F6BD60', '#FFF3B0', '#FFFFFF', '#E88D9E'];
+        const origin = { x: 0.5, y: 0.48 };
+
+        window.confetti({
+          particleCount: 140,
+          spread: 75,
+          startVelocity: 38,
+          gravity: 0.85,
+          ticks: 240,
+          origin,
+          colors,
+          scalar: 0.9
+        });
+
+        window.setTimeout(() => {
+          window.confetti({
+            particleCount: 55,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0.1, y: 0.55 },
+            colors,
+            scalar: 0.8
+          });
+          window.confetti({
+            particleCount: 55,
+            angle: 120,
+            spread: 55,
+            origin: { x: 0.9, y: 0.55 },
+            colors,
+            scalar: 0.8
+          });
+        }, 180);
+      };
+
       const openInvitation = () => {
         if (opened) return;
         opened = true;
+
+        launchConfetti();
+        pendingAutoplay = true;
+        if (youtubePlayer) {
+          pendingAutoplay = false;
+          youtubePlayer.playVideo();
+          musicPlaying = true;
+          audioIcon.textContent = '🔊';
+          audioLabel.textContent = 'Silenciar';
+          audioToggleButton.setAttribute('aria-label', 'Silenciar Vida de Rico');
+          audioToggleButton.setAttribute('aria-pressed', 'true');
+        }
 
         document.body.classList.remove('locked');
         document.body.classList.add('invitation-open');
